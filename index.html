@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kuesioner FAHP – Prioritas Fitur Konten TikTok FYP</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black:  #0a0a0f;
+    --white:  #f5f4f0;
+    --accent: #6ee7b7;
+    --accent2:#818cf8;
+    --card:   #13131f;
+    --border: #2a2a3a;
+    --muted:  #3a3a4a;
+    --danger: #f87171;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Sora', sans-serif;
+    background: var(--black);
+    color: var(--white);
+    min-height: 100vh;
+  }
+
+  /* ── HALAMAN LANDING ── */
+  #page-landing {
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: center; min-height: 100vh; padding: 2rem; text-align: center;
+  }
+  .brand-tag {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    letter-spacing: 3px; color: var(--accent); text-transform: uppercase;
+    margin-bottom: 1.5rem; border: 1px solid var(--accent);
+    padding: 4px 14px; border-radius: 20px; display: inline-block;
+  }
+  #page-landing h1 {
+    font-size: clamp(1.6rem, 4vw, 2.8rem); font-weight: 700;
+    line-height: 1.25; margin-bottom: 1rem;
+  }
+  #page-landing h1 span { color: var(--accent); }
+  #page-landing > p {
+    color: #888; font-size: 0.95rem; max-width: 480px;
+    margin: 0 auto 2.5rem; line-height: 1.75;
+  }
+
+  /* ── HALAMAN IDENTITAS ── */
+  #page-id {
+    display: none; flex-direction: column; align-items: center;
+    justify-content: center; min-height: 100vh; padding: 2rem;
+  }
+  .form-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 16px; padding: 2.5rem; width: 100%; max-width: 440px;
+  }
+  .form-card h2 { font-size: 1.3rem; margin-bottom: .4rem; }
+  .form-card > p { font-size: .85rem; color: #777; margin-bottom: 2rem; line-height: 1.65; }
+  label { display: block; font-size: .8rem; color: #aaa; margin-bottom: 6px; letter-spacing: .4px; }
+  input[type="text"], select {
+    width: 100%; padding: 12px 14px; background: #1a1a2e;
+    border: 1px solid var(--border); border-radius: 8px;
+    color: var(--white); font-family: 'Sora'; font-size: .9rem;
+    margin-bottom: 1.2rem; outline: none; transition: border .2s;
+  }
+  input:focus, select:focus { border-color: var(--accent); }
+  .err-msg { color: var(--danger); font-size: .8rem; margin-top: -.8rem; margin-bottom: 1rem; display: none; }
+
+  /* ── TOMBOL ── */
+  .btn {
+    display: inline-block; padding: 13px 34px; border-radius: 8px;
+    font-family: 'Sora'; font-size: .93rem; font-weight: 600;
+    cursor: pointer; border: none; transition: all .2s;
+  }
+  .btn:disabled { opacity: .45; cursor: not-allowed; transform: none !important; }
+  .btn-primary  { background: var(--accent); color: #0a0a0f; }
+  .btn-primary:hover  { background: #34d399; transform: translateY(-1px); }
+  .btn-ghost {
+    background: transparent; color: #777; border: 1px solid var(--border);
+    font-size: .82rem; padding: 9px 20px;
+  }
+  .btn-ghost:hover { color: var(--white); border-color: var(--muted); }
+
+  /* ── QUESTIONNAIRE ── */
+  #page-questionnaire {
+    display: none; padding: 2rem 1rem 4rem;
+    max-width: 860px; margin: 0 auto;
+  }
+  .q-header { margin-bottom: 2.5rem; }
+  .q-header h2 { font-size: 1.35rem; margin-bottom: .3rem; }
+  .q-header p  { color: #777; font-size: .85rem; line-height: 1.65; }
+  .section-label {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    color: var(--accent); letter-spacing: 2.5px; text-transform: uppercase; margin-bottom: .5rem;
+  }
+  .progress-wrap { background: var(--muted); border-radius: 99px; height: 4px; margin-top: 1rem; }
+  .progress-bar  { background: var(--accent); height: 4px; border-radius: 99px; transition: width .4s; }
+
+  .question-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 16px; padding: 2rem; margin-bottom: 1.5rem; display: none;
+  }
+  .question-card.active { display: block; animation: fadeUp .3s ease; }
+  @keyframes fadeUp { from { opacity:0; transform: translateY(10px) } to { opacity:1; transform: translateY(0) } }
+
+  .q-num { font-family: 'JetBrains Mono',monospace; font-size: 11px; color: var(--accent); letter-spacing: 2px; margin-bottom: .6rem; }
+  .q-text { font-size: .9rem; color: #999; line-height: 1.7; margin-bottom: 1.6rem; }
+  .q-text strong { color: var(--white); }
+
+  /* ── SKALA ── */
+  .scale-row {
+    display: flex; align-items: center; justify-content: center;
+    overflow-x: auto; padding: .8rem 0; gap: 0;
+  }
+  .crit-label {
+    min-width: 86px; max-width: 110px; font-size: .75rem;
+    font-weight: 600; padding: 0 6px; line-height: 1.4; flex-shrink: 0;
+  }
+  .crit-label.left  { color: var(--accent);  text-align: right; }
+  .crit-label.right { color: var(--accent2); text-align: left; }
+
+  .scale-btns { display: flex; gap: 4px; align-items: center; }
+  .s-btn {
+    width: 36px; height: 36px; border-radius: 50%;
+    border: 1.5px solid var(--border); background: transparent;
+    color: #777; font-family: 'JetBrains Mono', monospace; font-size: .72rem;
+    cursor: pointer; transition: all .15s; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .s-btn:hover { border-color: #777; color: var(--white); }
+  .s-btn[data-side="left"].selected   { background: var(--accent);  border-color: var(--accent);  color: #0a0a0f; }
+  .s-btn[data-side="right"].selected  { background: var(--accent2); border-color: var(--accent2); color: #fff; }
+  .s-btn[data-side="equal"].selected  { background: #4ade80;        border-color: #4ade80;        color: #0a0a0f; }
+
+  .equal-btn {
+    width: 46px !important; height: 46px !important;
+    border-color: #4ade80 !important; font-size: .63rem !important;
+  }
+
+  .scale-legend {
+    display: flex; justify-content: space-between;
+    font-size: .7rem; color: #444; margin-top: .4rem;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .fb { min-height: 20px; text-align: center; font-size: .8rem; color: #555; margin-top: .5rem; }
+  .fb.set { color: var(--accent); }
+
+  .nav-btns { display: flex; gap: 1rem; justify-content: flex-end; margin-top: 1.5rem; }
+
+  /* ── TERIMA KASIH ── */
+  #page-thankyou {
+    display: none; flex-direction: column; align-items: center;
+    justify-content: center; min-height: 100vh; text-align: center; padding: 2rem;
+  }
+  .big-icon { font-size: 4rem; margin-bottom: 1.2rem; }
+  #page-thankyou h2 { font-size: 2rem; margin-bottom: .6rem; }
+  #page-thankyou p  { color: #666; max-width: 400px; font-size: .9rem; line-height: 1.75; }
+
+  /* ── LOADING OVERLAY ── */
+  #overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(10,10,15,.88); z-index: 999;
+    flex-direction: column; align-items: center; justify-content: center;
+    backdrop-filter: blur(4px);
+  }
+  #overlay.on { display: flex; }
+  .spinner {
+    width: 46px; height: 46px; border: 3px solid var(--border);
+    border-top-color: var(--accent); border-radius: 50%;
+    animation: spin .8s linear infinite; margin-bottom: 1rem;
+  }
+  @keyframes spin { to { transform: rotate(360deg) } }
+  #overlay p { color: #aaa; font-size: .88rem; }
+
+  /* ── MOBILE ── */
+  @media (max-width: 480px) {
+    .s-btn    { width: 29px; height: 29px; font-size: .65rem; }
+    .equal-btn{ width: 38px !important; height: 38px !important; }
+    .crit-label { min-width: 66px; font-size: .68rem; }
+    .scale-btns { gap: 2px; }
+    .form-card { padding: 1.6rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- LOADING -->
+<div id="overlay"><div class="spinner"></div><p>Menyimpan jawaban...</p></div>
+
+<!-- ═══ LANDING ═══ -->
+<div id="page-landing">
+  <div class="brand-tag">Penelitian FAHP · 2026</div>
+  <h1>Kuesioner Prioritas<br>Fitur Konten <span>TikTok FYP</span></h1>
+  <p>Bantu kami menentukan fitur konten mana yang paling berpengaruh terhadap peluang video masuk halaman For You Page TikTok. Kuesioner ini membutuhkan ±5–10 menit.</p>
+  <button class="btn btn-primary" onclick="goTo('page-id')">Mulai Kuesioner →</button>
+</div>
+
+<!-- ═══ IDENTITAS ═══ -->
+<div id="page-id">
+  <div class="form-card">
+    <h2>Identitas Narasumber</h2>
+    <p>Data ini hanya untuk keperluan administrasi penelitian dan bersifat rahasia.</p>
+
+    <label>Nama Lengkap</label>
+    <input type="text" id="f-name" placeholder="Nama Anda...">
+
+    <label>Profesi / Keahlian</label>
+    <select id="f-role">
+      <option value="">-- Pilih --</option>
+      <option>Content Creator TikTok</option>
+      <option>Social Media Specialist</option>
+      <option>Akademisi / Peneliti</option>
+      <option>Pengamat Media Sosial</option>
+      <option>Lainnya</option>
+    </select>
+
+    <label>Pengalaman di bidang konten digital</label>
+    <select id="f-exp">
+      <option value="">-- Pilih --</option>
+      <option value="< 1 tahun">Kurang dari 1 tahun</option>
+      <option value="1-2 tahun">1–2 tahun</option>
+      <option value="3-5 tahun">3–5 tahun</option>
+      <option value="> 5 tahun">Lebih dari 5 tahun</option>
+    </select>
+
+    <div class="err-msg" id="id-err">Mohon lengkapi semua isian.</div>
+    <button class="btn btn-primary" style="width:100%" onclick="startQ()">Lanjutkan →</button>
+    <div style="text-align:center;margin-top:1rem">
+      <button class="btn btn-ghost" onclick="goTo('page-landing')">← Kembali</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ QUESTIONNAIRE ═══ -->
+<div id="page-questionnaire">
+  <div class="q-header">
+    <p class="section-label">Kuesioner FAHP · Perbandingan Berpasangan</p>
+    <h2>Seberapa Penting Tiap Fitur?</h2>
+    <p>Untuk setiap pasang fitur, pilih <strong>mana yang lebih penting</strong> dan <strong>seberapa besar</strong> perbedaannya (skala 1–9).</p>
+    <div class="progress-wrap" style="margin-top:1rem">
+      <div class="progress-bar" id="pbar" style="width:0%"></div>
+    </div>
+  </div>
+  <div id="q-container"></div>
+  <div class="nav-btns">
+    <button class="btn btn-ghost" id="btn-prev" onclick="prevQ()" style="visibility:hidden">← Sebelumnya</button>
+    <button class="btn btn-primary" id="btn-next" onclick="nextQ()">Selanjutnya →</button>
+  </div>
+</div>
+
+<!-- ═══ TERIMA KASIH ═══ -->
+<div id="page-thankyou">
+  <div class="big-icon">✅</div>
+  <h2>Terima Kasih!</h2>
+  <p>Jawaban Anda telah berhasil disimpan. Data ini sangat berharga untuk penelitian FAHP mengenai prioritas fitur konten TikTok FYP.</p>
+  <p style="margin-top:.8rem;color:#444;font-size:.8rem">Anda boleh menutup halaman ini.</p>
+</div>
+
+<script>
+// ============================================================
+//  ⚙️ GANTI URL INI dengan URL deployment Google Apps Script kamu
+// ============================================================
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx5DGRu29N0Sr0jhd3g9E5ThGJMuI8MizTZB_dyzLqzYLE_WZk86rFROQXDxXtBMYh8wQ/exec";
+
+// ============================================================
+//  DATA KRITERIA & PASANGAN
+// ============================================================
+const CRITERIA = [
+  "Hashtag Populer",   // index 0
+  "Musik Populer",     // index 1
+  "Panjang Caption",   // index 2
+  "Durasi Video",      // index 3
+  "Waktu Unggah",      // index 4
+];
+
+// Semua 10 pasang (C(5,2))
+const PAIRS = [];
+for (let i = 0; i < CRITERIA.length; i++)
+  for (let j = i+1; j < CRITERIA.length; j++)
+    PAIRS.push([i, j]);
+
+// ============================================================
+//  STATE
+// ============================================================
+let curPage = "page-landing";
+let curQ    = 0;
+let answers = {};
+let respondent = {};
+
+// ============================================================
+//  NAVIGASI HALAMAN
+// ============================================================
+function goTo(id) {
+  document.getElementById(curPage).style.display = "none";
+  curPage = id;
+  const el = document.getElementById(id);
+  const flexPages = ["page-landing","page-id","page-thankyou"];
+  el.style.display = flexPages.includes(id) ? "flex" : "block";
+}
+
+// ============================================================
+//  START: validasi identitas lalu bangun soal
+// ============================================================
+function startQ() {
+  const name = document.getElementById("f-name").value.trim();
+  const role = document.getElementById("f-role").value;
+  const exp  = document.getElementById("f-exp").value;
+
+  if (!name || !role || !exp) {
+    document.getElementById("id-err").style.display = "block";
+    return;
+  }
+  document.getElementById("id-err").style.display = "none";
+  respondent = { name, role, exp };
+  answers = {};
+  curQ = 0;
+  buildQuestions();
+  updateNav();
+  goTo("page-questionnaire");
+}
+
+// ============================================================
+//  BUILD SOAL
+// ============================================================
+function buildQuestions() {
+  const container = document.getElementById("q-container");
+  container.innerHTML = "";
+
+  PAIRS.forEach(([i, j], idx) => {
+    const key = `${i}_${j}`;
+    const div = document.createElement("div");
+    div.className = "question-card" + (idx === 0 ? " active" : "");
+    div.id = "q" + idx;
+
+    // Sisi kiri: 9 8 7 6 5 4 3 2 | sama | 2 3 4 5 6 7 8 9 :sisi kanan
+    const leftBtns  = [9,8,7,6,5,4,3,2].map(v =>
+      `<button class="s-btn" data-key="${key}" data-side="left"  data-val="${v}" onclick="pick(this)">${v}</button>`
+    ).join("");
+    const rightBtns = [2,3,4,5,6,7,8,9].map(v =>
+      `<button class="s-btn" data-key="${key}" data-side="right" data-val="${v}" onclick="pick(this)">${v}</button>`
+    ).join("");
+
+    div.innerHTML = `
+      <div class="q-num">PERTANYAAN ${idx+1} DARI ${PAIRS.length}</div>
+      <div class="q-text">
+        Antara <strong>${CRITERIA[i]}</strong> dan <strong>${CRITERIA[j]}</strong>,
+        fitur mana yang lebih berpengaruh terhadap peluang video masuk FYP TikTok?
+      </div>
+      <div class="scale-row">
+        <div class="crit-label left">${CRITERIA[i]}</div>
+        <div class="scale-btns">
+          ${leftBtns}
+          <button class="s-btn equal-btn" data-key="${key}" data-side="equal" data-val="1" onclick="pick(this)">sama</button>
+          ${rightBtns}
+        </div>
+        <div class="crit-label right">${CRITERIA[j]}</div>
+      </div>
+      <div class="scale-legend">
+        <span>← Sangat penting (9)</span>
+        <span>Sama (1)</span>
+        <span>Sangat penting (9) →</span>
+      </div>
+      <div class="fb" id="fb_${key}">Belum dipilih</div>
+    `;
+    container.appendChild(div);
+  });
+}
+
+function pick(btn) {
+  const key  = btn.dataset.key;
+  const side = btn.dataset.side;
+  const val  = parseInt(btn.dataset.val);
+
+  document.querySelectorAll(`[data-key="${key}"]`).forEach(b => b.classList.remove("selected"));
+  btn.classList.add("selected");
+  answers[key] = { side, val };
+
+  const [i, j] = key.split("_").map(Number);
+  const fb = document.getElementById("fb_" + key);
+  if (side === "equal") {
+    fb.textContent = "Sama penting (1:1)";
+  } else {
+    const name = side === "left" ? CRITERIA[i] : CRITERIA[j];
+    fb.textContent = `${name} lebih penting — skala ${val}`;
+  }
+  fb.className = "fb set";
+}
+
+// ============================================================
+//  NAVIGASI SOAL
+// ============================================================
+function updateNav() {
+  document.getElementById("btn-prev").style.visibility = curQ === 0 ? "hidden" : "visible";
+  document.getElementById("btn-next").textContent =
+    curQ === PAIRS.length - 1 ? "Kirim Jawaban ✓" : "Selanjutnya →";
+  document.getElementById("pbar").style.width = `${((curQ+1)/PAIRS.length)*100}%`;
+}
+
+function prevQ() {
+  if (curQ > 0) {
+    document.getElementById("q"+curQ).classList.remove("active");
+    curQ--;
+    document.getElementById("q"+curQ).classList.add("active");
+    updateNav();
+  }
+}
+
+function nextQ() {
+  const [i,j] = PAIRS[curQ];
+  if (!answers[`${i}_${j}`]) { alert("Mohon pilih jawaban terlebih dahulu."); return; }
+
+  if (curQ < PAIRS.length - 1) {
+    document.getElementById("q"+curQ).classList.remove("active");
+    curQ++;
+    document.getElementById("q"+curQ).classList.add("active");
+    updateNav();
+  } else {
+    submitData();
+  }
+}
+
+// ============================================================
+//  BUILD MATRIKS (n×n)
+// ============================================================
+function buildMatrix() {
+  const n   = CRITERIA.length;
+  const mat = Array.from({length:n}, () => Array(n).fill(1));
+  PAIRS.forEach(([i,j]) => {
+    const ans = answers[`${i}_${j}`];
+    if (!ans) return;
+    const v = ans.side === "equal" ? 1 : ans.side === "left" ? ans.val : 1/ans.val;
+    mat[i][j] = v;
+    mat[j][i] = parseFloat((1/v).toFixed(6));
+  });
+  return mat;
+}
+
+// ============================================================
+//  KIRIM DATA KE GOOGLE SHEETS
+// ============================================================
+async function submitData() {
+  document.getElementById("btn-next").disabled = true;
+  document.getElementById("overlay").classList.add("on");
+
+  const payload = {
+    id:         Date.now(),
+    timestamp:  new Date().toLocaleString("id-ID"),
+    respondent,
+    answers,
+    matrix:     buildMatrix()
+  };
+
+  try {
+    // mode no-cors wajib untuk cross-origin POST ke Apps Script.
+    // Browser tidak bisa baca respons, tapi data tetap masuk ke Spreadsheet.
+    await fetch(SCRIPT_URL, {
+      method:  "POST",
+      mode:    "no-cors",
+      headers: { "Content-Type": "application/json" },
+      body:    JSON.stringify(payload)
+    });
+    document.getElementById("overlay").classList.remove("on");
+    goTo("page-thankyou");
+  } catch (err) {
+    document.getElementById("overlay").classList.remove("on");
+    document.getElementById("btn-next").disabled = false;
+    alert("Gagal mengirim data. Periksa koneksi internet dan coba lagi.");
+  }
+}
+
+// ============================================================
+//  INIT — sembunyikan semua kecuali landing
+// ============================================================
+["page-id","page-questionnaire","page-thankyou"].forEach(id => {
+  document.getElementById(id).style.display = "none";
+});
+</script>
+</body>
+</html>
+
