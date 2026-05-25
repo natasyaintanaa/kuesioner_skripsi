@@ -204,6 +204,9 @@
     <label>Nama Lengkap</label>
     <input type="text" id="f-name" placeholder="Nama Anda...">
 
+    <label>Nama Akun TikTok</label>
+    <input type="text" id="f-account" placeholder="Nama Akun TikTok Anda...">
+
     <label>Profesi / Keahlian</label>
     <select id="f-role">
       <option value="">-- Pilih --</option>
@@ -303,15 +306,16 @@ function goTo(id) {
 // ============================================================
 function startQ() {
   const name = document.getElementById("f-name").value.trim();
+  const account = document.getElementById("f-account").value.trim();
   const role = document.getElementById("f-role").value;
   const exp  = document.getElementById("f-exp").value;
 
-  if (!name || !role || !exp) {
+  if (!name || !account || !role || !exp) {
     document.getElementById("id-err").style.display = "block";
     return;
   }
   document.getElementById("id-err").style.display = "none";
-  respondent = { name, role, exp };
+  respondent = { name, account, role, exp };
   answers = {};
   curQ = 0;
   buildQuestions();
