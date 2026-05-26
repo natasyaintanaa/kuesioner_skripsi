@@ -226,6 +226,9 @@
       <option value="> 5 tahun">Lebih dari 5 tahun</option>
     </select>
 
+    <label>No. HP (untuk keperluan pengisian saldo e-wallet)</label>
+    <input type="text" id="f-number" placeholder="Contoh : 08123456789 (ShopeePay)">
+
     <div class="err-msg" id="id-err">Mohon lengkapi semua isian.</div>
     <button class="btn btn-primary" style="width:100%" onclick="startQ()">Lanjutkan →</button>
     <div style="text-align:center;margin-top:1rem">
@@ -309,13 +312,14 @@ function startQ() {
   const account = document.getElementById("f-account").value.trim();
   const role = document.getElementById("f-role").value;
   const exp  = document.getElementById("f-exp").value;
+  const number = document.getElementById("f-number").value;
 
-  if (!name || !account || !role || !exp) {
+  if (!name || !account || !role || !exp || !number) {
     document.getElementById("id-err").style.display = "block";
     return;
   }
   document.getElementById("id-err").style.display = "none";
-  respondent = { name, account, role, exp };
+  respondent = { name, account, role, exp, number };
   answers = {};
   curQ = 0;
   buildQuestions();
